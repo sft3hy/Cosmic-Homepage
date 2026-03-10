@@ -1,0 +1,53 @@
+replicaCount: 1
+
+image:
+  repository: harbor.i2cv.io/cosmichorizon/cosmic-homepage
+  tag: "latest"
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: s-hxl2n
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  name: ""
+
+podAnnotations: {}
+podSecurityContext: {}
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: "cosmichorizon-nginx"
+  annotations:
+    argocd.argoproj.io/tracking-id: cosmic-homepage:networking.k8s.io/Ingress:cosmichorizon/cosmic-homepage
+    cert-manager.io/cluster-issuer: letsencrypt
+    external-dns.alpha.kubernetes.io/target: test-cosmichorizon-worker-68a3110f01feebd0.elb.us-gov-west-1.amazonaws.com
+    kubernetes.io/ingress.class: cosmichorizon-nginx
+    project: cosmichorizon
+  hosts:
+    - host: test-cosmichorizon-worker-68a3110f01feebd0.elb.us-gov-west-1.amazonaws.com
+      paths:
+        - path: /
+          pathType: Prefix
+          backendName: cosmic-homepage # Ignored if not setting specifically, the template will figure this out.
+          backendPort: 80
+  tls: []
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
