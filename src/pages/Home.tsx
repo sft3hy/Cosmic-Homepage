@@ -1,5 +1,5 @@
 import { Camera, Database, Search, ArrowRightLeft } from 'lucide-react';
-import logoImage from '../assets/logo.jpeg';
+import logoImage from '../assets/cosmic.png';
 
 const links = [
     {
@@ -32,9 +32,9 @@ const Home = () => {
     return (
         <div className="page-enter">
             <div className="hero-section">
-                <img 
-                    src={logoImage} 
-                    alt="Cosmic Horizon Logo" 
+                <img
+                    src={logoImage}
+                    alt="Cosmic Horizon Logo"
                     style={{
                         width: '180px',
                         height: '180px',
@@ -43,7 +43,7 @@ const Home = () => {
                         border: '2px solid var(--color-primary)',
                         boxShadow: '0 0 30px rgba(0, 242, 254, 0.4)',
                         marginBottom: '2rem'
-                    }} 
+                    }}
                 />
                 <h1 className="hero-title">Cosmic Horizon</h1>
                 <p className="hero-subtitle">
@@ -53,12 +53,12 @@ const Home = () => {
 
             <div style={{ marginTop: '4rem' }} className="links-grid">
                 {links.map((link, i) => (
-                    <a 
-                        href={link.url} 
-                        target="_blank" 
+                    <a
+                        href={link.url}
+                        target="_blank"
                         rel="noopener noreferrer"
-                        key={i} 
-                        className="glass-card link-item" 
+                        key={i}
+                        className="glass-card link-item"
                         style={{ animationDelay: `${i * 0.1}s` }}
                     >
                         <div className="link-icon-wrapper">
