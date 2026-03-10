@@ -2,6 +2,7 @@
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import About from './pages/About';
+import bgImage from './assets/background.jpg';
 
 const Navigation = () => {
   const location = useLocation();
@@ -28,6 +29,23 @@ const App = () => {
   return (
     <Router>
       <div className="app-container">
+        {/* Fixed global background image with futuristic overlay style */}
+        <div 
+            style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100vw',
+                height: '100vh',
+                backgroundImage: `url(${bgImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                zIndex: -1,
+                opacity: 0.25,
+                filter: 'contrast(1.2) saturate(1.2)',
+                pointerEvents: 'none'
+            }}
+        />
         <div className="stars"></div>
         <Navigation />
         <main className="main-content">
