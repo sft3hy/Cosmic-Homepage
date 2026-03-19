@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react
 import { Rocket } from 'lucide-react';
 import Home from './pages/Home';
 import About from './pages/About';
+import EditLink from './pages/EditLink';
+import DeleteLink from './pages/DeleteLink';
 import bgImage from './assets/background.jpg';
 
 const Navigation = () => {
@@ -49,6 +51,8 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
+            <Route path="/edit/asdf123-lemon/" element={<EditLink />} />
+            <Route path="/delete/asdf123-lemon/" element={<DeleteLink />} />
           </Routes>
         </main>
         <footer className="footer">
