@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import * as LucideIcons from 'lucide-react';
 import { links } from './Home';
 
@@ -8,7 +8,7 @@ const DeleteLink = () => {
 
   const handleDelete = async (title: string) => {
     if (!window.confirm(`Are you sure you want to delete ${title}?`)) return;
-    
+
     setStatus(`Deleting ${title}...`);
     try {
       const res = await fetch('/api/delete-link', {
@@ -31,12 +31,12 @@ const DeleteLink = () => {
   return (
     <div className="page-enter" style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto', marginTop: '4rem' }}>
       <h2 style={{ marginBottom: '1.5rem', textAlign: 'center' }}>Delete Links</h2>
-      
+
       {status && (
-        <div style={{ 
-          marginBottom: '1rem', 
-          padding: '1rem', 
-          backgroundColor: status.startsWith('Error') ? 'rgba(255, 0, 0, 0.2)' : 'rgba(0, 242, 254, 0.2)', 
+        <div style={{
+          marginBottom: '1rem',
+          padding: '1rem',
+          backgroundColor: status.startsWith('Error') ? 'rgba(255, 0, 0, 0.2)' : 'rgba(0, 242, 254, 0.2)',
           border: `1px solid ${status.startsWith('Error') ? 'rgba(255, 0, 0, 0.4)' : 'rgba(0, 242, 254, 0.4)'}`,
           borderRadius: '8px',
           color: 'white',
@@ -59,7 +59,7 @@ const DeleteLink = () => {
                   <p style={{ margin: 0, opacity: 0.7, fontSize: '0.9rem', wordBreak: 'break-all' }}>{link.url}</p>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => handleDelete(link.title)}
                 style={{
                   padding: '0.75rem 1.5rem',
