@@ -1,10 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as LucideIcons from 'lucide-react';
-import { links } from './Home';
+
+interface LinkItem {
+  title: string;
+  description: string;
+  iconName: string;
+  url: string;
+}
 
 const DeleteLink = () => {
   const [status, setStatus] = useState('');
-  const [currentLinks, setCurrentLinks] = useState(links);
+  const [currentLinks, setCurrentLinks] = useState<LinkItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/links.json')
+      .then(res => res.json())
+      .then(data => {
+        setCurrentLinks(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error loading links:', err);
+        setLoading(false);
+      });
+  }, []);
 
   const handleDelete = async (title: string) => {
     if (!window.confirm(`Are you sure you want to delete ${title}?`)) return;
@@ -17,7 +37,7 @@ const DeleteLink = () => {
         body: JSON.stringify({ title })
       });
       if (res.ok) {
-        setStatus(`Successfully deleted ${title}. Changes saved. Refresh to see on Home.`);
+        setStatus(`Successfully deleted ${title}. Changes saved. Refresh Home to see current state.`);
         setCurrentLinks(currentLinks.filter(l => l.title !== title));
       } else {
         const err = await res.json();
@@ -46,7 +66,9 @@ const DeleteLink = () => {
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        {currentLinks.map((link, i) => {
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '2rem' }}>Loading intelligence metadata...</div>
+        ) : currentLinks.map((link, i) => {
           const IconComponent = (LucideIcons as any)[link.iconName] || LucideIcons.Link;
           return (
             <div key={i} className="glass-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem' }}>
@@ -87,7 +109,7 @@ const DeleteLink = () => {
             </div>
           );
         })}
-        {currentLinks.length === 0 && (
+        {!loading && currentLinks.length === 0 && (
           <div style={{ textAlign: 'center', opacity: 0.5, padding: '2rem' }}>No links remaining.</div>
         )}
       </div>
@@ -96,3 +118,4 @@ const DeleteLink = () => {
 };
 
 export default DeleteLink;
+

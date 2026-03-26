@@ -1,45 +1,31 @@
+import { useState, useEffect } from 'react';
 import * as LucideIcons from "lucide-react";
 import logoImage from "../assets/cosmic.png";
 
-export const links = [
-  {
-    title: "CCTV Viewer",
-    description:
-      "YOLO-based computer vision model for identifying vehicles (cars, buses, trucks). Integrates with Chatsurfer for automated tipping.",
-    iconName: "Camera",
-    url: "https://test-cosmichorizon-worker-68a3110f01feebd0.elb.us-gov-west-1.amazonaws.com/cctv-viewer/",
-  },
-  {
-    title: "Airbud RAG System",
-    description:
-      "Retrieval-Augmented Generation system. Features parent-child chunking, vision language models for document analysis, and knowledge graph generation.",
-    iconName: "Database",
-    url: "#",
-  },
-  {
-    title: "Webscout",
-    description:
-      "Open source data aggregation tool. Collects and processes information for automated tipping to Chatsurfer rooms.",
-    iconName: "Search",
-    url: "https://test-cosmichorizon-worker-68a3110f01feebd0.elb.us-gov-west-1.amazonaws.com/cs-webscout/",
-  },
-  {
-    title: "Chatsurfer to Signal Mirror",
-    description:
-      "Bidirectional communication relay. Posts Signal room content to Chatsurfer, and routes Chatsurfer messages through an FOUO screener to prevent sensitive data leakage back to Signal, enriching the warfighter's intelligence picture.",
-    iconName: "ArrowRightLeft",
-    url: "#",
-  },
-  {
-    title: "CAC Viewer",
-    description:
-      "Dashboard to parse information from CAC/PIV smart cards. Locally, displays certificates and public keys (PIV Auth, Digital Signature, Key Management, Card Authentication) as well as associated email address, issuer agency, validity period, commanName, countryName, organizationName, and organizationalUnitName. Deployed, displays the CN information",
-    iconName: "IdCard",
-    url: "https://test-cosmichorizon-worker-68a3110f01feebd0.elb.us-gov-west-1.amazonaws.com/cac-utils/",
-  },
-];
+interface LinkItem {
+  title: string;
+  description: string;
+  iconName: string;
+  url: string;
+}
 
 const Home = () => {
+  const [links, setLinks] = useState<LinkItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/links.json')
+      .then(res => res.json())
+      .then(data => {
+        setLinks(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error loading links:', err);
+        setLoading(false);
+      });
+  }, []);
+
   return (
     <div className="page-enter">
       <div className="hero-section">
@@ -65,7 +51,11 @@ const Home = () => {
       </div>
 
       <div style={{ marginTop: "4rem" }} className="links-grid">
-        {links.map((link, i) => {
+        {loading ? (
+          <div style={{ textAlign: 'center', gridColumn: '1 / -1', padding: '2rem' }}>
+            <p>Scanning intelligence systems...</p>
+          </div>
+        ) : links.map((link, i) => {
           const IconComponent = (LucideIcons as any)[link.iconName] || LucideIcons.Link;
           return (
             <a
@@ -90,3 +80,4 @@ const Home = () => {
 };
 
 export default Home;
+

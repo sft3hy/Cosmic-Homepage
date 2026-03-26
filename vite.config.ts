@@ -9,26 +9,46 @@ const apiPlugin = () => ({
     server.middlewares.use('/api/add-link', (req: any, res: any, next: any) => {
       if (req.method === 'POST') {
         let body = '';
-        req.on('data', (chunk: any) => {
-          body += chunk.toString();
-        });
+        req.on('data', (chunk: any) => { body += chunk.toString(); });
         req.on('end', () => {
           try {
-            let { title, description, iconName, urlPath } = JSON.parse(body);
-            
-            // Basic PascalCase conversion for common mistakes (e.g. 'fullscreen' -> 'Fullscreen')
-            if (iconName && typeof iconName === 'string') {
-              iconName = iconName.charAt(0).toUpperCase() + iconName.slice(1);
-            }
+            const { title, description, iconName, urlPath } = JSON.parse(body);
+            const linksPath = path.resolve(__dirname, './public/links.json');
+            let links = JSON.parse(fs.readFileSync(linksPath, 'utf8'));
 
-            const homeTsxPath = path.resolve(__dirname, './src/pages/Home.tsx');
-            let content = fs.readFileSync(homeTsxPath, 'utf8');
+            links.push({
+              title,
+              description,
+              iconName,
+              url: `https://test-cosmichorizon-worker-68a3110f01feebd0.elb.us-gov-west-1.amazonaws.com/${urlPath}`
+            });
 
-            const newLink = `\n  {\n    title: ${JSON.stringify(title)},\n    description: ${JSON.stringify(description)},\n    iconName: ${JSON.stringify(iconName)},\n    url: ${JSON.stringify("https://test-cosmichorizon-worker-68a3110f01feebd0.elb.us-gov-west-1.amazonaws.com/" + urlPath)},\n  },`;
-            
-            content = content.replace('const links = [', `const links = [${newLink}`);
-            fs.writeFileSync(homeTsxPath, content);
+            fs.writeFileSync(linksPath, JSON.stringify(links, null, 2));
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ success: true }));
+          } catch (e: any) {
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: e.toString() }));
+          }
+        });
+      } else {
+        next();
+      }
+    });
 
+    server.middlewares.use('/api/delete-link', (req: any, res: any, next: any) => {
+      if (req.method === 'POST') {
+        let body = '';
+        req.on('data', (chunk: any) => { body += chunk.toString(); });
+        req.on('end', () => {
+          try {
+            const { title } = JSON.parse(body);
+            const linksPath = path.resolve(__dirname, './public/links.json');
+            let links = JSON.parse(fs.readFileSync(linksPath, 'utf8'));
+
+            links = links.filter((l: any) => l.title !== title);
+
+            fs.writeFileSync(linksPath, JSON.stringify(links, null, 2));
             res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify({ success: true }));
           } catch (e: any) {
@@ -47,40 +67,7 @@ const apiPlugin = () => ({
 export default defineConfig({
   plugins: [
     react(),
-    apiPlugin(),
-    {
-      name: 'api-delete-plugin',
-      configureServer(server: any) {
-        server.middlewares.use('/api/delete-link', (req: any, res: any, next: any) => {
-          if (req.method === 'POST') {
-            let body = '';
-            req.on('data', (chunk: any) => { body += chunk.toString(); });
-            req.on('end', () => {
-              try {
-                const { title } = JSON.parse(body);
-                const homeTsxPath = path.resolve(__dirname, './src/pages/Home.tsx');
-                let content = fs.readFileSync(homeTsxPath, 'utf8');
-
-                // Escape title for regex
-                const escapedTitle = title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                // Regex matches spacing + { + spacing + title: "Title" + any content up to next },
-                const regex = new RegExp(`\\s*{\\s*title:\\s*"${escapedTitle}"[\\s\\S]*?},`);
-                content = content.replace(regex, '');
-
-                fs.writeFileSync(homeTsxPath, content);
-                res.setHeader('Content-Type', 'application/json');
-                res.end(JSON.stringify({ success: true }));
-              } catch (e: any) {
-                res.statusCode = 500;
-                res.end(JSON.stringify({ error: e.toString() }));
-              }
-            });
-          } else {
-            next();
-          }
-        });
-      }
-    }
+    apiPlugin()
   ],
   resolve: {
     alias: {

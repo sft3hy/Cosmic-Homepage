@@ -1,0 +1,32 @@
+[
+  {
+    "title": "CCTV Viewer",
+    "description": "YOLO-based computer vision model for identifying vehicles (cars, buses, trucks). Integrates with Chatsurfer for automated tipping.",
+    "iconName": "Camera",
+    "url": "https://test-cosmichorizon-worker-68a3110f01feebd0.elb.us-gov-west-1.amazonaws.com/cctv-viewer/"
+  },
+  {
+    "title": "Airbud RAG System",
+    "description": "Retrieval-Augmented Generation system. Features parent-child chunking, vision language models for document analysis, and knowledge graph generation.",
+    "iconName": "Database",
+    "url": "#"
+  },
+  {
+    "title": "Webscout",
+    "description": "Open source data aggregation tool. Collects and processes information for automated tipping to Chatsurfer rooms.",
+    "iconName": "Search",
+    "url": "https://test-cosmichorizon-worker-68a3110f01feebd0.elb.us-gov-west-1.amazonaws.com/cs-webscout/"
+  },
+  {
+    "title": "Chatsurfer to Signal Mirror",
+    "description": "Bidirectional communication relay. Posts Signal room content to Chatsurfer, and routes Chatsurfer messages through an FOUO screener to prevent sensitive data leakage back to Signal, enriching the warfighter's intelligence picture.",
+    "iconName": "ArrowRightLeft",
+    "url": "#"
+  },
+  {
+    "title": "CAC Viewer",
+    "description": "Dashboard to parse information from CAC/PIV smart cards. Locally, displays certificates and public keys (PIV Auth, Digital Signature, Key Management, Card Authentication) as well as associated email address, issuer agency, validity period, commanName, countryName, organizationName, and organizationalUnitName. Deployed, displays the CN information",
+    "iconName": "IdCard",
+    "url": "https://test-cosmichorizon-worker-68a3110f01feebd0.elb.us-gov-west-1.amazonaws.com/cac-utils/"
+  }
+]

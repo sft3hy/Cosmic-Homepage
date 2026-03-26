@@ -16,16 +16,21 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM nginx:alpine
+FROM node:20-alpine
 
-# Copy custom Nginx configuration to support SPA routing (React Router)
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+WORKDIR /app
 
-# Copy built static files from the build stage to Nginx's web root
-COPY --from=build /app/dist /usr/share/nginx/html
+# Copy built static files and the server
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/server.js ./
+COPY --from=build /app/package.json ./
+
+# Install only production dependencies
+RUN npm install express
 
 # Expose port it listens on
 EXPOSE 80
 
-# Start Nginx Server
-CMD ["nginx", "-g", "daemon off;"]
+# Start the Node.js Server
+CMD ["node", "server.js"]
+
